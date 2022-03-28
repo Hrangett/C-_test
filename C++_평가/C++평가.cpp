@@ -1,3 +1,10 @@
+/*
+	C++ 평가.c
+	created : 2022. 3. 28
+	Author : 이은영
+*/
+
+
 #include<iostream>
 #include<vector>
 #include<Windows.h>
@@ -8,7 +15,7 @@ using namespace std;
 enum { EX = 0,PRD_ADD,PRD_INFO, PRD_DELE};
 enum { BOOK = 1,CD,CELLPHONE,ALL };
 
-
+//부모클래스
 class Product
 {
 private:
@@ -49,7 +56,7 @@ public:
 		: title(ref.title), writer(ref.writer), publisher(ref.publisher), Product(ref.description,ref.price)
 	{	}
 
-	//항목구분
+	//항목구분 :: Book상품 조회시 사용
 	string name()
 	{
 		return "Book";
@@ -58,7 +65,8 @@ public:
 	//출력
 	void getProduct()
 	{
-		cout <<"title : "<< title << endl;
+
+		cout <<"Title : "<< title << endl;
 		cout << "writer : "<<writer << endl;
 		cout <<"publisher : "<< publisher << endl;
 		Product::getProduct();
@@ -85,14 +93,15 @@ public:
 	Cd(Cd& ref) 
 		: title(ref.title), singer(ref.singer), Product(ref.description, ref.price)
 	{ }
-
+	//항목구분 :: CD상품 조회시 사용
 	string name()
 	{
 		return "Cd";
 	}
 	void getProduct()
 	{
-		cout << "title : " << title << endl;
+
+		cout << "Title : " << title << endl;
 		cout << "singer : " << singer << endl;
 		Product::getProduct();
 
@@ -106,22 +115,30 @@ public:
 
 class Cellphone : public Product
 {
-	string phon_name;
+	string model;
+	string manufacturer;
 	string description;
+
 	int price;
 
 public:
-	Cellphone(string pname, string description, int price)
-		:phon_name(pname), Product(description, price)
+	Cellphone(string model, string manufacturer, 	string description,int price)
+		:model(model), manufacturer(manufacturer),Product(description, price)
 	{
 		
 	}
 	void getProduct()
 	{
-		cout << "Product_code : " << phon_name << endl;
+
+		//상품모델
+		cout << "Model : " << model << endl;
+		//manufacturer
+		cout << "Manufacturer : " << manufacturer << endl;
 		Product::getProduct();
 
 	}
+
+	//항목구분 :: Cellphone상품 조회시 사용
 	string name()
 	{
 		return "Cellphone";
@@ -151,6 +168,7 @@ public:
 		cout << "3. 상품 삭제" << endl;
 
 	}
+
 	//소메뉴
 	void menu()
 	{
@@ -193,16 +211,16 @@ public:
 		v.push_back(pobj[(idx - 1)]);
 
 	}
+
 	//Book 조회
 	void Book_Info()
 	{
+		cout << "===== Book Product ======" << endl;
 
 		for (int i = 0; i < idx; i++)
 		{
-			//cout << *iter << endl;
 			if (pobj[i]->name() == "Book")
 			{
-				cout << "Book" << i + 1 << endl;
 				pobj[i]->getProduct();
 				cout << endl;
 			}
@@ -210,6 +228,7 @@ public:
 		}
 		
 	}
+
 	//Cd 추가
 	void Cd_put()
 	{
@@ -244,11 +263,12 @@ public:
 	//Cd 조회
 	void Cd_Info()
 	{
+		cout << "===== Cd Product ======" << endl;
+
 		for (int i = 0; i < idx; i++)
 		{
 			if (pobj[i]->name() == "Cd")
 			{
-				cout << "Cd" << i + 1 << endl;
 				pobj[i]->getProduct();
 				cout << endl;
 			}
@@ -259,26 +279,33 @@ public:
 	//CellPhone 추가
 	void CPhone_put()
 	{
-		string phon_name;
+		string model;
+		string manufacturer;
 		string description;
 		int price;
-		//상품모델
+		
 		cout << "===== ADD CellPhone Product ======" << endl;
-
-		cout << "Product_code : ";
-		cin >> phon_name;
+		//상품모델
+		cout << "Model : ";
+		cin >> model;
 		cout << endl;
+		//manufacturer
+		cout << "Manufacturer : ";
+		cin >> manufacturer;
+		cout << endl;
+
 		//가격
 		cout << "Price : ";
 		cin >> price;
 		cout << endl;
+
 		//상세정보
 		cout << "Description : ";
 		cin >> description;
 		cout << endl;
 
 
-		pobj[idx++] = new Cellphone(phon_name, description, price);
+		pobj[idx++] = new Cellphone(model, manufacturer, description, price);
 		v.push_back(pobj[(idx-1)]);
 
 	}
@@ -286,11 +313,12 @@ public:
 	//CellPhone 조회
 	void CPhone_Info()
 	{
+		cout << "===== CellPhone Product ======" << endl;
+
 		for (int i = 0; i < idx; i++)
 		{
 			if (pobj[i]->name() == "Cellphone")
 			{
-				cout << "Cellphone" << i + 1 << endl;
 				pobj[i]->getProduct();
 				cout << endl;
 			}
@@ -298,6 +326,7 @@ public:
 		cout << endl;
 	}
 
+	//모든 데이터 조회
 	void ShowAllProduct()
 	{
 		for (int i = 0; i < idx; i++)
@@ -326,7 +355,7 @@ public:
 	{	//인덱스 읽어오기 :: 품목에 부여되는 인덱스 번호를 받아 삭제
 		for (int i = 0; i < idx; i++)
 		{
-			if (i == (id-1))// 일치하면, :: id
+			if (i == (id-1))// 일치하면 :: id
 			{
 				for (iter = v.begin(); iter != v.end(); ++iter)
 				{
@@ -351,7 +380,7 @@ public:
 
 	~ProductHandler()
 	{
-
+		//동적할당된 메모리 해제
 		for(iter = v.begin();	iter != v.end(); ++iter) 
 		{
 			delete *iter ; 
@@ -389,7 +418,7 @@ int main()
 				cout << "->";
 				cin >> cho;
 				cout << endl;
-				if (cho == EX)
+				if (cho == EX)	//0 입력시 다시 메인화면으로
 					break;
 				switch (cho)
 				{
@@ -420,7 +449,7 @@ int main()
 				cout << "->";
 				cin >> cho;
 				cout << endl;
-				if (cho == EX)
+				if (cho == EX)	//0 입력시 다시 메인화면으로
 					break;
 				switch (cho)
 				{
@@ -453,7 +482,7 @@ int main()
 				cout << "Delete ID -->";	//삭제할 상품의 id 입력
 				cin >> cho;
 				cout << endl;
-				if (cho == EX)
+				if (cho == EX) //0 입력시 다시 메인화면으로
 					break;
 				handle.Prod_dele(cho);
 			}
